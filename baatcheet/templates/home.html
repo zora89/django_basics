@@ -1,0 +1,22 @@
+{% extends 'main.html' %}
+
+{% block content %}
+
+<h1>
+    Landing Page
+</h1>
+
+<div>
+    <div>
+        {% for room in rooms %}
+          <div>
+            <h4>{{room.id}} -- {{room.name}}</h4>
+          </div>
+
+
+        {% endfor %}
+    </div>
+
+</div>
+
+{% endblock  %}
