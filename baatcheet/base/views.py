@@ -9,8 +9,14 @@ rooms = [
 
 
 def home(request):
-    return render(request, 'home.html', {'rooms' : rooms})
+    home_data = {'rooms': rooms}
+    return render(request, 'base/home.html', home_data )
 
-def room(request):
-    return render(request, 'room.html')
+def room(request, id):
+    room = None
+    for i in rooms:
+        if i['id'] == int(id):
+            room = i 
+    room_data = {'room': room}
+    return render(request, 'base/room.html', room_data)
     
