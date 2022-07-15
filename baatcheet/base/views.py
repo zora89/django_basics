@@ -12,11 +12,12 @@ def home(request):
         
         )
     topic = Topic.objects.all()
+    room_count = rooms.count()
     user = User.objects.filter(
         Q(username__icontains=q)
     )
 
-    home_data = {'rooms': rooms, 'topics': topic, 'users': user}
+    home_data = {'rooms': rooms, 'topics': topic, 'users': user, 'room_count': room_count }
     return render(request, 'base/home.html', home_data )
 
 def room(request, id):
