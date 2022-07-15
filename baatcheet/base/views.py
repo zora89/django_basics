@@ -1,22 +1,20 @@
 from django.shortcuts import render
-
-
-rooms = [
-    {'id':1, 'name': "Lets Discuss Politics"},
-    {'id':2, 'name': "Lets Discuss Science"},
-    {'id':3, 'name': "Lets Discuss History"},
-]
-
+from .models import Room
+from .forms import RoomForm
 
 def home(request):
+    rooms = Room.objects.all()
     home_data = {'rooms': rooms}
     return render(request, 'base/home.html', home_data )
 
 def room(request, id):
-    room = None
-    for i in rooms:
-        if i['id'] == int(id):
-            room = i 
+    room = Room.objects.get(id=id)
     room_data = {'room': room}
     return render(request, 'base/room.html', room_data)
     
+def createRoom(request):
+    form = RoomForm()
+    create_data = {'form': form}
+    
+    return render(request, 'base/room_form.html', create_data)
+
