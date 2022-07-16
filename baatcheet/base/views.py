@@ -56,7 +56,6 @@ def registerPage(request):
 
 
 
-
     return render(request, 'base/login_register.html', {'form': form})
 
 def home(request):
@@ -108,7 +107,9 @@ def createRoom(request):
     if request.method == "POST":
         form = RoomForm(request.POST)
         if form.is_valid():
-            form.save()
+            room = form.save(commit=False)
+            room.host = request.user
+            room.save()
             print(request.POST)
             return redirect('home')
 
