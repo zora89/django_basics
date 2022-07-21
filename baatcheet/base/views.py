@@ -104,16 +104,34 @@ def userProfile(request, id):
 @login_required(login_url="login")    
 def createRoom(request):
     form = RoomForm()
+    topics = Topic.objects.all()
     if request.method == "POST":
-        form = RoomForm(request.POST)
-        if form.is_valid():
-            room = form.save(commit=False)
-            room.host = request.user
-            room.save()
-            print(request.POST)
-            return redirect('home')
+        topic_name = request.POST.get('topic')
 
-    create_data = {'form': form}
+        # Get_Or_Create Object Below
+
+        topic, created = Topic.objects.get_or_create(name=topic_name)
+
+        Room.objects.create(
+            host=request.user,
+            topic=topic,
+            name=request.POST.get('name'),
+            description=request.POST.get('description'),
+        )
+        return redirect('home')
+
+
+        #Another Method Form 
+
+        # form = RoomForm(request.POST)
+        # if form.is_valid():
+        #     room = form.save(commit=False)
+        #     room.host = request.user
+        #     room.save()
+        #     print(request.POST)
+        #     return redirect('home')
+
+    create_data = {'form': form , 'topics': topics}
     
     return render(request, 'base/room_form.html', create_data)
 
@@ -121,6 +139,7 @@ def createRoom(request):
 def updateRoom(request, id):
     room = Room.objects.get(id=id)
     form = RoomForm(instance=room)
+    topics = Topic.objects.all()
 
     if request.user != room.host:
         return HttpResponse('Not Allowed!')
@@ -131,7 +150,7 @@ def updateRoom(request, id):
             form.save()
             return redirect('home')
 
-    update_data = {'form': form}
+    update_data = {'form': form, 'topics': topics}
     return render(request, 'base/room_form.html', update_data)
 
 @login_required(login_url="login") 
