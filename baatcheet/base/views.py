@@ -107,10 +107,11 @@ def createRoom(request):
     topics = Topic.objects.all()
     if request.method == "POST":
         topic_name = request.POST.get('topic')
+        topic, created = Topic.objects.get_or_create(name=topic_name)
 
         # Get_Or_Create Object Below
 
-        topic, created = Topic.objects.get_or_create(name=topic_name)
+        
 
         Room.objects.create(
             host=request.user,
@@ -145,12 +146,15 @@ def updateRoom(request, id):
         return HttpResponse('Not Allowed!')
 
     if request.method == "POST":
-        form = RoomForm(request.POST, instance=room)
-        if form.is_valid():
-            form.save()
-            return redirect('home')
+        topic_name = request.POST.get('topic')
+        topic, created = Topic.objects.get_or_create(name=topic_name)
+        room.name = request.POST.get('name')
+        room.topic = topic
+        room.description = request.POST.get('description')
+        room.save()
+        return redirect('home')
 
-    update_data = {'form': form, 'topics': topics}
+    update_data = {'form': form, 'topics': topics, 'room': room}
     return render(request, 'base/room_form.html', update_data)
 
 @login_required(login_url="login") 
